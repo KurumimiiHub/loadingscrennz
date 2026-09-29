@@ -1,9 +1,9 @@
 --[[
     Steal a brainrot Jump For Egg Script
     Arcade loading screen (red + yellow) - PC, tablet and phone friendly
-    - Counts 1 -> 99 in exactly 3 seconds
+    - Counts 1 -> 99 in the first 10 seconds, then holds at 99%
+    - Whole loading screen lasts 5 minutes
     - Auto-scales to any screen size / rotation (portrait + landscape)
-    - Pop-in intro, floating pixel particles, bouncing eggs, flash on finish
     Put your main script where marked at the bottom.
 ]]
 
@@ -13,7 +13,8 @@ local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 
 local TITLE = "Steal a brainrot Jump For Egg Script"
-local COUNT_TIME = 3
+local COUNT_TIME = 10     -- seconds to go 1 -> 99
+local TOTAL_TIME = 300    -- total loading time (5 minutes)
 local MAX_COUNT = 99
 local SEGMENTS = 24
 
@@ -73,6 +74,7 @@ local Root = new("CanvasGroup", {
 	BackgroundTransparency = 0.2,
 	BorderSizePixel = 0,
 	GroupTransparency = 1,
+	Active = true, -- blocks taps/clicks behind the loading screen
 }, Gui)
 
 -- Floating pixel particles
@@ -93,7 +95,7 @@ for i = 1, 16 do
 	}
 end
 
--- HOLDER: fixed 560x380 design, scaled to fit any screen
+-- HOLDER: fixed 560x380 design, scaled to fit any screen (PC / tablet / phone)
 local Holder = new("Frame", {
 	AnchorPoint = Vector2.new(0.5, 0.5),
 	Position = UDim2.fromScale(0.5, 0.6),
@@ -108,7 +110,7 @@ local function updateScale()
 		return
 	end
 	local vp = cam.ViewportSize
-	Fit.Scale = math.clamp(math.min(vp.X / (CARD_W + 60), vp.Y / (CARD_H + 60)), 0.4, 1.7)
+	Fit.Scale = math.clamp(math.min(vp.X / (CARD_W + 24), vp.Y / (CARD_H + 24)), 0.3, 2)
 end
 updateScale()
 local camConn
@@ -144,6 +146,10 @@ local Card = new("Frame", {
 	ZIndex = 2,
 }, Holder)
 new("UIStroke", { Color = BROWN, Thickness = 6 }, Card)
+new("UIGradient", {
+	Rotation = 90,
+	Color = ColorSequence.new(Color3.fromRGB(246, 70, 66), Color3.fromRGB(176, 28, 40)),
+}, Card)
 
 for _, pos in ipairs({ { 5, 5 }, { 549, 5 }, { 5, 369 }, { 549, 369 } }) do
 	new("Frame", {
@@ -163,6 +169,10 @@ local Header = new("Frame", {
 	ClipsDescendants = true,
 }, Card)
 new("UIStroke", { Color = RED_DARK, Thickness = 3 }, Header)
+new("UIGradient", {
+	Rotation = 90,
+	Color = ColorSequence.new(Color3.fromRGB(40, 34, 104), Color3.fromRGB(14, 12, 40)),
+}, Header)
 
 local twinkles = {}
 local rng = Random.new(7)
@@ -214,6 +224,10 @@ local Panel = new("Frame", {
 	ClipsDescendants = true,
 }, Card)
 new("UIStroke", { Color = RED_DARK, Thickness = 4 }, Panel)
+new("UIGradient", {
+	Rotation = 90,
+	Color = ColorSequence.new(Color3.fromRGB(255, 232, 90), Color3.fromRGB(255, 200, 10)),
+}, Panel)
 
 for i = 0, 43 do
 	new("Frame", {
@@ -226,32 +240,20 @@ for i = 0, 43 do
 end
 
 local Percent = new("TextLabel", {
-	Position = UDim2.fromOffset(18, 10),
-	Size = UDim2.fromOffset(200, 54),
+	Position = UDim2.fromOffset(0, 8),
+	Size = UDim2.new(1, 0, 0, 60),
 	BackgroundTransparency = 1,
 	Font = Enum.Font.Arcade,
 	Text = "1%",
 	TextColor3 = RED_DARK,
-	TextSize = 54,
-	TextXAlignment = Enum.TextXAlignment.Left,
-}, Panel)
-local PercentPop = new("UIScale", {}, Percent)
-
-local TimeLeft = new("TextLabel", {
-	AnchorPoint = Vector2.new(1, 0),
-	Position = UDim2.new(1, -18, 0, 26),
-	Size = UDim2.fromOffset(200, 26),
-	BackgroundTransparency = 1,
-	Font = Enum.Font.Arcade,
-	Text = "0:03 left",
-	TextColor3 = RED_DARK,
-	TextSize = 22,
-	TextXAlignment = Enum.TextXAlignment.Right,
+	TextSize = 60,
+	TextXAlignment = Enum.TextXAlignment.Center,
 }, Panel)
 
 local BarBack = new("Frame", {
 	Position = UDim2.fromOffset(12, 76),
 	Size = UDim2.fromOffset(504, 34),
+	ClipsDescendants = true,
 	BackgroundColor3 = RED_DARK,
 	BorderSizePixel = 0,
 }, Panel)
@@ -273,15 +275,33 @@ for i = 1, SEGMENTS do
 	}, BarBack)
 end
 
+-- Shine that sweeps across the bar
+local Shine = new("Frame", {
+	Size = UDim2.new(0, 36, 1, 0),
+	BackgroundColor3 = Color3.new(1, 1, 1),
+	BackgroundTransparency = 0.75,
+	BorderSizePixel = 0,
+	ZIndex = 3,
+}, BarBack)
+
+-- Glossy highlight on the top half of the bar
+new("Frame", {
+	Size = UDim2.new(1, 0, 0.4, 0),
+	BackgroundColor3 = Color3.new(1, 1, 1),
+	BackgroundTransparency = 0.85,
+	BorderSizePixel = 0,
+	ZIndex = 4,
+}, BarBack)
+
 local Status = new("TextLabel", {
-	Position = UDim2.fromOffset(40, 124),
-	Size = UDim2.fromOffset(470, 30),
+	Position = UDim2.fromOffset(0, 124),
+	Size = UDim2.new(1, 0, 0, 30),
 	BackgroundTransparency = 1,
 	Font = Enum.Font.Arcade,
 	Text = "> Loading assets",
 	TextColor3 = BROWN,
 	TextSize = 22,
-	TextXAlignment = Enum.TextXAlignment.Left,
+	TextXAlignment = Enum.TextXAlignment.Center,
 }, Panel)
 
 -- EGG ICONS
@@ -352,33 +372,47 @@ TweenService:Create(
 ):Play()
 
 -- LOGIC
+-- Status text while counting 1 -> 99
 local messages = {
 	{ 0, "> Loading assets" },
 	{ 25, "> Hatching eggs" },
 	{ 50, "> Setting up Egg ESP" },
 	{ 75, "> Charging jump" },
-	{ 95, "> Ready to steal" },
+	{ 95, "> Almost there" },
+}
+-- Status text rotated every 8s while holding at 99% (until 5:00 is up)
+local holdMessages = {
+	"> Finalizing scripts",
+	"> Warming up eggs",
+	"> Syncing jump power",
+	"> Polishing brainrots",
+	"> Almost ready to steal",
 }
 
-local elapsed, lastShown, finished = 0, 0, false
+local elapsed, lastShown, finished = 0, -1, false
 local conn
 
 conn = RunService.Heartbeat:Connect(function(dt)
 	elapsed += dt
 
+	-- 1 -> 99 in COUNT_TIME seconds, then stays on 99
 	local n = math.clamp(math.floor(1 + (elapsed / COUNT_TIME) * (MAX_COUNT - 1) + 0.5), 1, MAX_COUNT)
 	if n ~= lastShown then
 		lastShown = n
 		Percent.Text = n .. "%"
-		if n % 10 == 0 then
-			PercentPop.Scale = 1.2
-			TweenService:Create(PercentPop, TweenInfo.new(0.2), { Scale = 1 }):Play()
-		end
-		for _, m in ipairs(messages) do
-			if n >= m[1] then
-				Status.Text = m[2]
+		if n < MAX_COUNT then
+			for _, m in ipairs(messages) do
+				if n >= m[1] then
+					Status.Text = m[2]
+				end
 			end
 		end
+	end
+
+	-- After the count, rotate messages + animated dots
+	if elapsed > COUNT_TIME then
+		local idx = math.floor((elapsed - COUNT_TIME) / 8) % #holdMessages + 1
+		Status.Text = holdMessages[idx] .. string.rep(".", math.floor(elapsed * 2) % 4)
 	end
 
 	local lit = math.max(1, math.min(SEGMENTS, math.ceil(n / MAX_COUNT * SEGMENTS)))
@@ -393,17 +427,13 @@ conn = RunService.Heartbeat:Connect(function(dt)
 		end
 	end
 
-	TimeLeft.Text = string.format("0:%02d left", math.max(0, math.ceil(COUNT_TIME - elapsed)))
-
 	local shift = math.floor(elapsed * 8)
 	for i, c in ipairs(checks) do
 		c.BackgroundColor3 = ((i + shift) % 2 == 0) and GRAY_A or GRAY_B
 	end
 
-	local bounce = math.abs(math.sin(elapsed * 6)) * 8
-	EggL.Position = UDim2.fromOffset(20, 262 - bounce)
-	EggR.Position = UDim2.fromOffset(514, 262 - (8 - bounce))
 	Star.Rotation = math.sin(elapsed * 4) * 15
+	Shine.Position = UDim2.fromOffset(((elapsed * 0.6) % 1.3 - 0.15) * 504, 0)
 
 	for i, t in ipairs(twinkles) do
 		t.BackgroundTransparency = 0.3 + 0.5 * math.abs(math.sin(elapsed * 3 + i))
@@ -419,15 +449,14 @@ conn = RunService.Heartbeat:Connect(function(dt)
 
 	Wait.TextTransparency = (math.floor(elapsed * 3) % 2 == 0) and 0 or 0.35
 
-	if elapsed >= COUNT_TIME and not finished then
+	if elapsed >= TOTAL_TIME and not finished then
 		finished = true
 		conn:Disconnect()
-		Percent.Text = MAX_COUNT .. "%"
+		Percent.Text = "100%"
 		for _, s in ipairs(segs) do
 			s.BackgroundColor3 = RED
 		end
 		Status.Text = "> Ready to steal"
-		TimeLeft.Text = "0:00 left"
 		Wait.Text = "GAME START!"
 		Wait.TextTransparency = 0
 
