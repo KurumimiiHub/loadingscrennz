@@ -86,8 +86,10 @@ do
 	local lg = mk("ScreenGui", {Name = "LuckyBlockLuckerLoading", ResetOnSpawn = false, IgnoreGuiInset = true,
 		DisplayOrder = 999999, ZIndexBehavior = Enum.ZIndexBehavior.Sibling}, nil)
 	pcall(function() lg.ScreenInsets = Enum.ScreenInsets.None end)
-	local root = mk("CanvasGroup", {Size = UDim2.fromScale(1, 1), BackgroundColor3 = C.white, BorderSizePixel = 0, GroupTransparency = 1}, lg)
-	mk("UIGradient", {Color = ColorSequence.new(Color3.fromRGB(34,27,36), Color3.fromRGB(10,9,12)), Rotation = 90}, root)
+	local root = mk("CanvasGroup", {Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, BorderSizePixel = 0, GroupTransparency = 1}, lg)
+	-- gradient lives on its own frame (a gradient on the CanvasGroup itself would darken everything inside it)
+	local bg = mk("Frame", {Size = UDim2.fromScale(1, 1), BackgroundColor3 = C.white, BorderSizePixel = 0}, root)
+	mk("UIGradient", {Color = ColorSequence.new(Color3.fromRGB(34,27,36), Color3.fromRGB(10,9,12)), Rotation = 90}, bg)
 	mk("TextButton", {Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Text = "", AutoButtonColor = false}, root) -- blocks clicks
 
 	for _ = 1, 14 do -- floating voxel squares
