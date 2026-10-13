@@ -1,547 +1,198 @@
---[[
-    Steal a brainrot Jump For Egg Script - Loading Screen
-    - Logo + arcade machine artwork, red/yellow arcade card, black backdrop
-    - Counts 1 -> 99 over the first 10 seconds, holds at 99%, total 5 minutes
-    - Scales to any screen (PC / tablet / phone, portrait + landscape)
-
-    IMAGES: Roblox can only show images that have an asset id.
-    1) Upload both pictures at create.roblox.com (Creator Hub > Decals/Images)
-    2) Paste the ids below, e.g. "rbxassetid://1234567890"
-    Executor alternative: writefile("logo.png", data) then
-    LOGO_IMAGE = getcustomasset("logo.png")
-    Leave a slot empty ("") and the script falls back gracefully.
-]]
-
-local LOGO_IMAGE = ""   -- "STEAL A BRAINROT" logo
-local ARCADE_IMAGE = "" -- red arcade machine
+-- LUCKY BLOCK LUCKER v3 | Loading screen only | Solara version (paste into Solara and press Execute)
+-- Optional skull picture (pick ONE, or leave both empty for the "? ?" fallback):
+local SKULL_URL = ""      -- direct link to skull.png (e.g. a raw.githubusercontent.com link)
+local SKULL_IMAGE_ID = 0  -- or a Roblox image Asset ID you uploaded
+-- (if both are empty, the built-in skull picture below is used automatically)
+local SKULL_B64 = [==[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]==]
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
-local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
-local Workspace = game:GetService("Workspace")
+local UIS = game:GetService("UserInputService")
+local playerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
 
-local TITLE = "Steal a brainrot Jump For Egg Script"
-local COUNT_TIME = 10 -- 1 -> 99 over 10 seconds
-local TOTAL_TIME = 300 -- 5 minutes total
-local MAX_COUNT = 99
-local SEGMENTS = 18
-local CARD_W, DESIGN_H = 560, 504
-local IS_TOUCH = UserInputService.TouchEnabled -- phones / tablets
-
-local RED = Color3.fromRGB(226, 46, 52)
-local RED_DIM = Color3.fromRGB(150, 24, 34)
-local RED_DARK = Color3.fromRGB(110, 14, 24)
-local RED_HEAD = Color3.fromRGB(255, 122, 112)
-local YELLOW = Color3.fromRGB(255, 214, 10)
-local YELLOW_TXT = Color3.fromRGB(255, 226, 40)
-local BROWN = Color3.fromRGB(86, 40, 20)
-local GRAY_A = Color3.fromRGB(150, 150, 155)
-local GRAY_B = Color3.fromRGB(104, 104, 110)
-
-local function new(class, props, parent)
-	local obj = Instance.new(class)
-	for k, v in pairs(props) do
-		obj[k] = v
-	end
-	obj.Parent = parent
-	return obj
+-- remove old copy if you execute twice
+for _, parent in ipairs({playerGui, game:GetService("CoreGui"), gethui and gethui() or nil}) do
+	pcall(function() local old = parent:FindFirstChild("LuckyBlockLucker"); if old then old:Destroy() end end)
 end
 
-local function getParent()
-	local ok, ui = pcall(function()
-		return (gethui and gethui()) or game:GetService("CoreGui")
+local function parentGui(g)
+	pcall(function() if syn and syn.protect_gui then syn.protect_gui(g) end end)
+	pcall(function() g.Parent = (gethui and gethui()) or game:GetService("CoreGui") end)
+	if not g.Parent then g.Parent = playerGui end
+end
+
+local function loadSkullFromUrl()
+	local ok, asset = pcall(function()
+		writefile("lbl_skull.png", game:HttpGet(SKULL_URL))
+		return (getcustomasset or getsynasset)("lbl_skull.png")
 	end)
-	if ok and ui then
-		return ui
-	end
-	return Players.LocalPlayer:WaitForChild("PlayerGui")
+	return ok and asset or nil
 end
-
-local parent = getParent()
-local old = parent:FindFirstChild(TITLE)
-if old then
-	old:Destroy()
-end
-
-local Gui = new("ScreenGui", {
-	Name = TITLE,
-	IgnoreGuiInset = true,
-	ResetOnSpawn = false,
-	DisplayOrder = 999,
-	ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
-}, parent)
-pcall(function()
-	Gui.ScreenInsets = Enum.ScreenInsets.None
-end)
-
--- Solid black backdrop
-local Root = new("CanvasGroup", {
-	Size = UDim2.fromScale(1, 1),
-	BackgroundColor3 = Color3.new(0, 0, 0),
-	BackgroundTransparency = 0,
-	BorderSizePixel = 0,
-	GroupTransparency = 1,
-	Active = true,
-}, Gui)
-
--- Retro grid lines drifting upward behind everything
-local gridLines = {}
-for i = 1, 8 do
-	gridLines[i] = new("Frame", {
-		Size = UDim2.new(1, 0, 0, 2),
-		BackgroundColor3 = RED,
-		BackgroundTransparency = 0.86,
-		BorderSizePixel = 0,
-	}, Root)
-end
-
-local particles = {}
-local prng = Random.new(21)
-for i = 1, (IS_TOUCH and 8 or 16) do -- fewer particles on phones
-	local size = prng:NextInteger(4, 9)
-	particles[i] = {
-		frame = new("Frame", {
-			Size = UDim2.fromOffset(size, size),
-			BackgroundColor3 = (i % 2 == 0) and YELLOW or RED,
-			BackgroundTransparency = prng:NextNumber(0.45, 0.8),
-			BorderSizePixel = 0,
-		}, Root),
-		x = prng:NextNumber(),
-		y = prng:NextNumber(),
-		speed = prng:NextNumber(0.05, 0.16),
-	}
-end
-
--- Holder: fixed design size, scaled to fit any screen
-local Holder = new("Frame", {
-	AnchorPoint = Vector2.new(0.5, 0.5),
-	Position = UDim2.fromScale(0.5, 0.6),
-	Size = UDim2.fromOffset(CARD_W, DESIGN_H),
-	BackgroundTransparency = 1,
-}, Root)
-
-local Fit = new("UIScale", {}, Holder)
-local function updateScale()
-	local vp = Root.AbsoluteSize
-	local cam = Workspace.CurrentCamera
-	if (vp.X < 1 or vp.Y < 1) and cam then
-		vp = cam.ViewportSize
-	end
-	local margin = IS_TOUCH and 40 or 24 -- keeps clear of notches / rounded corners
-	Fit.Scale = math.clamp(math.min(vp.X / (CARD_W + margin), vp.Y / (DESIGN_H + margin)), 0.3, 2)
-end
-updateScale()
-Root:GetPropertyChangedSignal("AbsoluteSize"):Connect(updateScale)
-local camConn
-local function hookCamera()
-	if camConn then
-		camConn:Disconnect()
-	end
-	local cam = Workspace.CurrentCamera
-	if cam then
-		camConn = cam:GetPropertyChangedSignal("ViewportSize"):Connect(updateScale)
-	end
-end
-hookCamera()
-Workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(function()
-	hookCamera()
-	updateScale()
-end)
-
--- Card (drop shadow + body)
-new("Frame", {
-	Position = UDim2.fromOffset(10, 154),
-	Size = UDim2.fromOffset(CARD_W, 330),
-	BackgroundColor3 = Color3.new(0, 0, 0),
-	BackgroundTransparency = 0.4,
-	BorderSizePixel = 0,
-	ZIndex = 1,
-}, Holder)
-
-local Card = new("Frame", {
-	Position = UDim2.fromOffset(0, 144),
-	Size = UDim2.fromOffset(CARD_W, 330),
-	BackgroundColor3 = RED,
-	BorderSizePixel = 0,
-	ZIndex = 2,
-}, Holder)
-local CardStroke = new("UIStroke", { Color = BROWN, Thickness = 6 }, Card)
-for _, pos in ipairs({ { 6, 6 }, { 548, 6 }, { 6, 318 }, { 548, 318 } }) do
-	new("Frame", {
-		Position = UDim2.fromOffset(pos[1], pos[2]),
-		Size = UDim2.fromOffset(6, 6),
-		BackgroundColor3 = YELLOW,
-		BorderSizePixel = 0,
-		ZIndex = 3,
-	}, Card)
-end
-new("UIGradient", {
-	Rotation = 90,
-	Color = ColorSequence.new(Color3.fromRGB(246, 70, 66), Color3.fromRGB(176, 28, 40)),
-}, Card)
-
--- Logo (overlaps the top of the card). Falls back to text if no image id.
-if LOGO_IMAGE ~= "" then
-	new("ImageLabel", {
-		Position = UDim2.fromOffset(130, 0),
-		Size = UDim2.fromOffset(300, 171),
-		BackgroundTransparency = 1,
-		Image = LOGO_IMAGE,
-		ScaleType = Enum.ScaleType.Fit,
-		ZIndex = 6,
-	}, Holder)
-else
-	new("TextLabel", {
-		Position = UDim2.fromOffset(0, 60),
-		Size = UDim2.fromOffset(CARD_W, 60),
-		BackgroundTransparency = 1,
-		Font = Enum.Font.Arcade,
-		Text = "STEAL A BRAINROT",
-		TextColor3 = YELLOW_TXT,
-		TextSize = 38,
-		ZIndex = 6,
-	}, Holder)
-end
-
--- Arcade art on the left; if missing the panel uses the full width
-local hasArt = ARCADE_IMAGE ~= ""
-local panelX = hasArt and 176 or 16
-local panelW = hasArt and 368 or 528
-if hasArt then
-	-- soft yellow glow behind the machine
-	local glow = new("Frame", {
-		Position = UDim2.fromOffset(-6, 14),
-		Size = UDim2.fromOffset(172, 187),
-		BackgroundColor3 = YELLOW,
-		BackgroundTransparency = 0.82,
-		BorderSizePixel = 0,
-		ZIndex = 4,
-	}, Card)
-	new("UICorner", { CornerRadius = UDim.new(0.5, 0) }, glow)
-	new("ImageLabel", {
-		Position = UDim2.fromOffset(10, 24),
-		Size = UDim2.fromOffset(150, 167),
-		BackgroundTransparency = 1,
-		Image = ARCADE_IMAGE,
-		ScaleType = Enum.ScaleType.Fit,
-		ZIndex = 5,
-	}, Card)
-end
-
--- Main yellow panel
-local Panel = new("Frame", {
-	Position = UDim2.fromOffset(panelX, 34),
-	Size = UDim2.fromOffset(panelW, 150),
-	BackgroundColor3 = YELLOW,
-	BorderSizePixel = 0,
-	ClipsDescendants = true,
-}, Card)
-new("UIStroke", { Color = RED_DARK, Thickness = 4 }, Panel)
-new("UIGradient", {
-	Rotation = 90,
-	Color = ColorSequence.new(Color3.fromRGB(255, 232, 90), Color3.fromRGB(255, 200, 10)),
-}, Panel)
-
-for i = 0, 37 do -- scanlines
-	new("Frame", {
-		Position = UDim2.fromOffset(0, i * 4),
-		Size = UDim2.new(1, 0, 0, 1),
-		BackgroundColor3 = Color3.fromRGB(255, 240, 120),
-		BackgroundTransparency = 0.6,
-		BorderSizePixel = 0,
-	}, Panel)
-end
-
-local Percent = new("TextLabel", {
-	Position = UDim2.fromOffset(0, 8),
-	Size = UDim2.new(1, 0, 0, 56),
-	BackgroundTransparency = 1,
-	Font = Enum.Font.Arcade,
-	Text = "1%",
-	TextColor3 = RED_DARK,
-	TextSize = 54,
-}, Panel)
-new("UIStroke", { Color = Color3.fromRGB(255, 246, 170), Thickness = 2 }, Percent)
-
-local BarBack = new("Frame", {
-	Position = UDim2.fromOffset(12, 72),
-	Size = UDim2.fromOffset(panelW - 24, 34),
-	BackgroundColor3 = RED_DARK,
-	BorderSizePixel = 0,
-	ClipsDescendants = true,
-}, Panel)
-new("UIStroke", { Color = Color3.fromRGB(70, 8, 16), Thickness = 3 }, BarBack)
-new("UIPadding", {
-	PaddingLeft = UDim.new(0, 4),
-	PaddingRight = UDim.new(0, 1),
-	PaddingTop = UDim.new(0, 4),
-	PaddingBottom = UDim.new(0, 4),
-}, BarBack)
-
-local segs = {}
-for i = 1, SEGMENTS do
-	segs[i] = new("Frame", {
-		Position = UDim2.new((i - 1) / SEGMENTS, 0, 0, 0),
-		Size = UDim2.new(1 / SEGMENTS, -3, 1, 0),
-		BackgroundColor3 = RED_DIM,
-		BorderSizePixel = 0,
-	}, BarBack)
-end
-
-local Shine = new("Frame", {
-	Size = UDim2.new(0, 36, 1, 0),
-	BackgroundColor3 = Color3.new(1, 1, 1),
-	BackgroundTransparency = 0.75,
-	BorderSizePixel = 0,
-	ZIndex = 3,
-}, BarBack)
-new("Frame", {
-	Size = UDim2.new(1, 0, 0.4, 0),
-	BackgroundColor3 = Color3.new(1, 1, 1),
-	BackgroundTransparency = 0.85,
-	BorderSizePixel = 0,
-	ZIndex = 4,
-}, BarBack)
-
-for _, f in ipairs({ 0.25, 0.5, 0.75 }) do -- 25/50/75% ticks
-	new("Frame", {
-		Position = UDim2.fromOffset(12 + (panelW - 24) * f, 108),
-		Size = UDim2.fromOffset(3, 6),
-		BackgroundColor3 = RED_DARK,
-		BorderSizePixel = 0,
-	}, Panel)
-end
-
-local Status = new("TextLabel", {
-	Position = UDim2.fromOffset(0, 116),
-	Size = UDim2.new(1, 0, 0, 26),
-	BackgroundTransparency = 1,
-	Font = Enum.Font.Arcade,
-	Text = "> Loading assets",
-	TextColor3 = BROWN,
-	TextSize = 20,
-}, Panel)
-
--- Footer
-local Wait = new("TextLabel", {
-	Position = UDim2.fromOffset(0, 202),
-	Size = UDim2.new(1, 0, 0, 30),
-	BackgroundTransparency = 1,
-	Font = Enum.Font.Arcade,
-	Text = "PLEASE WAIT.",
-	TextColor3 = YELLOW_TXT,
-	TextSize = 26,
-}, Card)
-
-local Checker = new("Frame", {
-	Position = UDim2.fromOffset(16, 240),
-	Size = UDim2.fromOffset(528, 28),
-	BackgroundColor3 = GRAY_B,
-	BorderSizePixel = 0,
-	ClipsDescendants = true,
-}, Card)
-new("UIStroke", { Color = BROWN, Thickness = 3 }, Checker)
-
-local CHECKS = 14
-local checks = {}
-for i = 1, CHECKS do
-	checks[i] = new("Frame", {
-		Position = UDim2.new((i - 1) / CHECKS, 0, 0, 0),
-		Size = UDim2.new(1 / CHECKS, 0, 1, 0),
-		BackgroundColor3 = GRAY_A,
-		BorderSizePixel = 0,
-	}, Checker)
-end
-
--- Script name ribbon
-local Ribbon = new("Frame", {
-	Position = UDim2.fromOffset(16, 284),
-	Size = UDim2.fromOffset(528, 32),
-	BackgroundColor3 = Color3.fromRGB(22, 20, 62),
-	BorderSizePixel = 0,
-	ClipsDescendants = true,
-}, Card)
-new("UIStroke", { Color = RED_DARK, Thickness = 3 }, Ribbon)
-new("UIGradient", {
-	Rotation = 90,
-	Color = ColorSequence.new(Color3.fromRGB(40, 34, 104), Color3.fromRGB(14, 12, 40)),
-}, Ribbon)
-new("TextLabel", {
-	Size = UDim2.fromScale(1, 1),
-	BackgroundTransparency = 1,
-	Font = Enum.Font.Arcade,
-	Text = "Jump For Eggs LTM Auto Get Egg Script",
-	TextColor3 = YELLOW_TXT,
-	TextSize = 18,
-}, Ribbon)
-local RibbonShine = new("Frame", {
-	Size = UDim2.new(0, 40, 1, 0),
-	BackgroundColor3 = Color3.new(1, 1, 1),
-	BackgroundTransparency = 0.85,
-	BorderSizePixel = 0,
-}, Ribbon)
-
-local Flash = new("Frame", {
-	Size = UDim2.fromScale(1, 1),
-	BackgroundColor3 = Color3.new(1, 1, 1),
-	BackgroundTransparency = 1,
-	BorderSizePixel = 0,
-	ZIndex = 20,
-}, Card)
-
--- Rotating tips under the card
-local tips = {
-	"TIP: Stay in the game while it loads",
-	"TIP: Auto Get Egg starts when loading ends",
-	"TIP: Made for PC and mobile players",
-	"TIP: Almost there, hang tight",
-}
-local Tip = new("TextLabel", {
-	Position = UDim2.fromOffset(0, 480),
-	Size = UDim2.fromOffset(CARD_W, 22),
-	BackgroundTransparency = 1,
-	Font = Enum.Font.Arcade,
-	Text = tips[1],
-	TextColor3 = Color3.new(1, 1, 1),
-	TextSize = 16,
-}, Holder)
-local lastTip, lastStatus = 0, ""
-
--- Sparkles around the logo
-local sparkles = {}
-for i, pos in ipairs({ { 116, 34 }, { 436, 22 }, { 138, 138 }, { 424, 150 } }) do
-	sparkles[i] = new("Frame", {
-		Position = UDim2.fromOffset(pos[1], pos[2]),
-		Size = UDim2.fromOffset(9, 9),
-		Rotation = 45,
-		BackgroundColor3 = Color3.new(1, 1, 1),
-		BorderSizePixel = 0,
-		ZIndex = 7,
-	}, Holder)
-end
-
--- Intro
-TweenService:Create(Root, TweenInfo.new(0.35), { GroupTransparency = 0 }):Play()
-TweenService:Create(
-	Holder,
-	TweenInfo.new(0.45, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
-	{ Position = UDim2.fromScale(0.5, 0.5) }
-):Play()
-
--- Logic
-local messages = {
-	{ 1, "> Loading assets" },
-	{ 25, "> Hatching eggs" },
-	{ 50, "> Setting up Egg ESP" },
-	{ 75, "> Charging jump" },
-	{ 95, "> Almost there" },
-}
-local holdMessages = {
-	"> Finalizing scripts",
-	"> Warming up eggs",
-	"> Syncing jump power",
-	"> Polishing brainrots",
-	"> Almost ready to steal",
-}
-
-local elapsed, lastShown, finished = 0, -1, false
-local conn
-
-conn = RunService.Heartbeat:Connect(function(dt)
-	elapsed += dt
-
-	local n = math.clamp(math.floor(1 + (elapsed / COUNT_TIME) * (MAX_COUNT - 1) + 0.5), 1, MAX_COUNT)
-	if n ~= lastShown then
-		lastShown = n
-		Percent.Text = n .. "%"
-		if n < MAX_COUNT then
-			for _, m in ipairs(messages) do
-				if n >= m[1] then
-					Status.Text = m[2]
-				end
+local function b64decode(data)
+	local chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+	local lookup = {}
+	for i = 1, 64 do lookup[chars:byte(i)] = i - 1 end
+	local out, n, buffer, bits = {}, 0, 0, 0
+	for i = 1, #data do
+		local v = lookup[data:byte(i)]
+		if v then
+			buffer = buffer * 64 + v
+			bits = bits + 6
+			if bits >= 8 then
+				bits = bits - 8
+				n = n + 1
+				out[n] = string.char(math.floor(buffer / 2 ^ bits))
+				buffer = buffer % 2 ^ bits
 			end
 		end
 	end
+	return table.concat(out)
+end
 
-	if elapsed > COUNT_TIME then
-		local idx = math.floor((elapsed - COUNT_TIME) / 8) % #holdMessages + 1
-		local st = holdMessages[idx] .. string.rep(".", math.floor(elapsed * 2) % 4)
-		if st ~= lastStatus then -- only touch the label when the text changes
-			lastStatus = st
-			Status.Text = st
-		end
+local function loadEmbeddedSkull()
+	local ok, asset = pcall(function()
+		writefile("lbl_skull.png", b64decode(SKULL_B64))
+		return (getcustomasset or getsynasset)("lbl_skull.png")
+	end)
+	return ok and asset or nil
+end
+
+local skullAsset = (SKULL_IMAGE_ID ~= 0 and ("rbxassetid://" .. SKULL_IMAGE_ID))
+	or (SKULL_URL ~= "" and loadSkullFromUrl()) or loadEmbeddedSkull()
+
+-- ============ LOADING SCREEN (full screen, phone + PC) ============
+local LOAD_SECONDS = 135 -- 2 min 15 s (change to make it shorter/longer)
+do
+	local StarterGui = game:GetService("StarterGui")
+	local C = {pink = Color3.fromRGB(240,226,226), pink2 = Color3.fromRGB(214,196,198), gray = Color3.fromRGB(150,132,136),
+		dark = Color3.fromRGB(24,22,26), white = Color3.fromRGB(255,255,255), green = Color3.fromRGB(120,200,120)}
+	local FT, FB = Enum.Font.FredokaOne, Enum.Font.GothamBold
+	local function mk(class, props, parent)
+		local o = Instance.new(class)
+		for k, v in pairs(props) do o[k] = v end
+		o.Parent = parent
+		return o
+	end
+	local function label(parent, order, size, text, font, color, maxText, align)
+		local l = mk("TextLabel", {LayoutOrder = order, Size = size, BackgroundTransparency = 1, Text = text, Font = font,
+			TextColor3 = color, TextScaled = true, TextWrapped = true, TextXAlignment = align or Enum.TextXAlignment.Center}, parent)
+		mk("UITextSizeConstraint", {MaxTextSize = maxText}, l)
+		return l
+	end
+	for _, p in ipairs({playerGui, game:GetService("CoreGui"), gethui and gethui() or nil}) do
+		pcall(function() local o = p:FindFirstChild("LuckyBlockLuckerLoading"); if o then o:Destroy() end end)
 	end
 
-	local lit = math.max(1, math.min(SEGMENTS, math.ceil(n / MAX_COUNT * SEGMENTS)))
-	local headFlash = (math.floor(elapsed * 10) % 2 == 0) and RED_HEAD or YELLOW
-	for i, s in ipairs(segs) do
-		if i < lit then
-			s.BackgroundColor3 = RED
-		elseif i == lit then
-			s.BackgroundColor3 = headFlash
-		else
-			s.BackgroundColor3 = RED_DIM
-		end
-	end
+	local lg = mk("ScreenGui", {Name = "LuckyBlockLuckerLoading", ResetOnSpawn = false, IgnoreGuiInset = true,
+		DisplayOrder = 999999, ZIndexBehavior = Enum.ZIndexBehavior.Sibling}, nil)
+	pcall(function() lg.ScreenInsets = Enum.ScreenInsets.None end)
+	local root = mk("CanvasGroup", {Size = UDim2.fromScale(1, 1), BackgroundColor3 = C.white, BorderSizePixel = 0, GroupTransparency = 1}, lg)
+	mk("UIGradient", {Color = ColorSequence.new(Color3.fromRGB(34,27,36), Color3.fromRGB(10,9,12)), Rotation = 90}, root)
+	mk("TextButton", {Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Text = "", AutoButtonColor = false}, root) -- blocks clicks
 
-	Shine.Position = UDim2.fromOffset(((elapsed * 0.6) % 1.3 - 0.15) * (panelW - 24), 0)
-
-	CardStroke.Color = BROWN:Lerp(YELLOW, (math.sin(elapsed * 2) + 1) / 2 * 0.35) -- border glow
-
-	local shift = math.floor(elapsed * 8)
-	for i, c in ipairs(checks) do
-		c.BackgroundColor3 = ((i + shift) % 2 == 0) and GRAY_A or GRAY_B
-	end
-
-	for _, p in ipairs(particles) do
-		p.y -= p.speed * dt
-		if p.y < -0.05 then
-			p.y = 1.05
-		end
-		p.frame.Position = UDim2.fromScale(p.x, p.y)
-	end
-
-	for i, g in ipairs(gridLines) do
-		g.Position = UDim2.fromScale(0, ((i / 8) + elapsed * 0.03) % 1)
-	end
-	local ti = math.floor(elapsed / 5) % #tips + 1
-	if ti ~= lastTip then
-		lastTip = ti
-		Tip.Text = tips[ti]
-	end
-	local ph = elapsed % 5 -- fade in / out at the edges of each tip
-	local fade = ph < 0.4 and (1 - ph / 0.4) or (ph > 4.6 and (ph - 4.6) / 0.4 or 0)
-	Tip.TextTransparency = 0.15 + fade * 0.85
-	for i, sp in ipairs(sparkles) do
-		sp.BackgroundTransparency = 1 - math.abs(math.sin(elapsed * 3 + i * 1.7)) * 0.8
-	end
-	RibbonShine.Position = UDim2.fromOffset(((elapsed * 0.35) % 1.4 - 0.2) * 528, 0)
-
-	Wait.TextTransparency = (math.floor(elapsed * 3) % 2 == 0) and 0 or 0.35
-
-	if elapsed >= TOTAL_TIME and not finished then
-		finished = true
-		conn:Disconnect()
-		Percent.Text = "100%"
-		for _, s in ipairs(segs) do
-			s.BackgroundColor3 = RED
-		end
-		Status.Text = "> Ready to steal"
-		Wait.Text = "GAME START!"
-		Wait.TextTransparency = 0
-
-		Flash.BackgroundTransparency = 0.3
-		TweenService:Create(Flash, TweenInfo.new(0.4), { BackgroundTransparency = 1 }):Play()
-
-		task.delay(0.6, function()
-			local tween = TweenService:Create(Root, TweenInfo.new(0.5), { GroupTransparency = 1 })
-			tween:Play()
-			tween.Completed:Wait()
-			Gui:Destroy()
-
-			-- ===== PUT YOUR MAIN SCRIPT BELOW THIS LINE =====
-
+	for _ = 1, 14 do -- floating voxel squares
+		local s = math.random(14, 34)
+		local sq = mk("Frame", {Size = UDim2.fromOffset(s, s), Position = UDim2.fromScale(math.random(), 1.1),
+			BackgroundColor3 = C.pink, BackgroundTransparency = 0.88, BorderSizePixel = 0}, root)
+		task.spawn(function()
+			task.wait(math.random() * 6)
+			while lg.Parent do
+				local x, t = math.random(), math.random(10, 20)
+				sq.Position = UDim2.fromScale(x, 1.1)
+				TweenService:Create(sq, TweenInfo.new(t, Enum.EasingStyle.Linear), {Position = UDim2.fromScale(x, -0.2), Rotation = math.random(-90, 90)}):Play()
+				task.wait(t)
+			end
 		end)
 	end
-end)
+
+	local card = mk("Frame", {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5),
+		Size = UDim2.fromScale(0.86, 0.86), BackgroundTransparency = 1}, root)
+	mk("UISizeConstraint", {MaxSize = Vector2.new(480, 420)}, card)
+	mk("UIListLayout", {SortOrder = Enum.SortOrder.LayoutOrder, HorizontalAlignment = Enum.HorizontalAlignment.Center,
+		VerticalAlignment = Enum.VerticalAlignment.Center, Padding = UDim.new(0.025, 0)}, card)
+
+	local holder = mk("Frame", {LayoutOrder = 1, Size = UDim2.fromScale(1, 0.3), BackgroundTransparency = 1}, card)
+	local glow = mk("Frame", {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(1, 1),
+		BackgroundColor3 = C.pink, BackgroundTransparency = 0.9, BorderSizePixel = 0}, holder)
+	mk("UICorner", {CornerRadius = UDim.new(1, 0)}, glow)
+	mk("UIAspectRatioConstraint", {AspectRatio = 1}, glow)
+	TweenService:Create(glow, TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {BackgroundTransparency = 0.78}):Play()
+	local skull
+	if skullAsset then
+		skull = mk("ImageLabel", {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(1, 1),
+			BackgroundTransparency = 1, Image = skullAsset}, holder)
+		mk("UIAspectRatioConstraint", {AspectRatio = 1.678}, skull)
+	else
+		skull = label(holder, 1, UDim2.fromScale(1, 1), "? ?", FT, C.pink, 60)
+		skull.AnchorPoint = Vector2.new(0.5, 0.5); skull.Position = UDim2.fromScale(0.5, 0.5)
+	end
+	skull.Rotation = -3
+	TweenService:Create(skull, TweenInfo.new(1.4, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+		{Position = UDim2.fromScale(0.5, 0.44), Rotation = 3}):Play()
+
+	label(card, 2, UDim2.fromScale(1, 0.12), "LUCKY BLOCK LUCKER", FT, C.pink, 36)
+	local stageLbl = label(card, 3, UDim2.fromScale(1, 0.07), "Starting up", FB, C.pink2, 18)
+
+	local bar = mk("Frame", {LayoutOrder = 4, Size = UDim2.fromScale(0.9, 0.07), BackgroundColor3 = C.dark, ClipsDescendants = true}, card)
+	mk("UICorner", {CornerRadius = UDim.new(1, 0)}, bar)
+	mk("UIStroke", {Color = C.gray, Thickness = 2}, bar)
+	local fill = mk("Frame", {Size = UDim2.fromScale(0, 1), BackgroundColor3 = C.pink, BorderSizePixel = 0, ClipsDescendants = true}, bar)
+	mk("UICorner", {CornerRadius = UDim.new(1, 0)}, fill)
+	local shine = mk("Frame", {Size = UDim2.fromScale(0.25, 1), Position = UDim2.fromScale(-0.3, 0), BackgroundColor3 = C.white,
+		BackgroundTransparency = 0.6, BorderSizePixel = 0}, fill)
+	TweenService:Create(shine, TweenInfo.new(1.4, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, -1), {Position = UDim2.fromScale(1.1, 0)}):Play()
+
+	local row = mk("Frame", {LayoutOrder = 5, Size = UDim2.fromScale(0.9, 0.06), BackgroundTransparency = 1}, card)
+	local pct = label(row, 1, UDim2.fromScale(1, 1), "0%", FB, C.white, 16)
+
+	local TIPS = {"Tip: good things come to those who wait.", "Tip: lucky blocks can drop rare items.", "Tip: stay close, the loading will finish soon.",
+		"Tip: rare drops are worth the wait."}
+	local stepRow = mk("Frame", {LayoutOrder = 6, Size = UDim2.new(0.9, 0, 0, 16), BackgroundTransparency = 1}, card)
+	mk("UIListLayout", {FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Center,
+		VerticalAlignment = Enum.VerticalAlignment.Center, Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder}, stepRow)
+	local steps = {}
+	for i = 1, 5 do
+		steps[i] = mk("Frame", {LayoutOrder = i, Size = UDim2.fromOffset(14, 14), BackgroundColor3 = C.dark, BorderSizePixel = 0}, stepRow)
+		mk("UIStroke", {Color = C.gray, Thickness = 1}, steps[i])
+	end
+	local tipLbl = label(card, 7, UDim2.fromScale(0.9, 0.09), TIPS[1], FB, C.gray, 14)
+
+
+	local WP = {{0,0},{.05,.10},{.15,.28},{.25,.34},{.45,.62},{.55,.65},{.75,.86},{.88,.93},{.95,.98},{1,1}}
+	local function prog(f)
+		for i = 2, #WP do
+			local a, b = WP[i-1], WP[i]
+			if f <= b[1] then return a[2] + (b[2] - a[2]) * ((f - a[1]) / (b[1] - a[1])) end
+		end
+		return 1
+	end
+	local STAGES = {{0,"Starting up"},{.10,"Checking environment"},{.25,"Loading modules"},{.45,"Preparing interface"},
+		{.65,"Optimizing"},{.85,"Almost there"},{.97,"Finalizing"}}
+
+	pcall(function() StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false) end)
+	parentGui(lg)
+	TweenService:Create(root, TweenInfo.new(0.5), {GroupTransparency = 0}):Play()
+
+	local t0 = os.clock()
+	while true do
+		local t = os.clock() - t0
+		if t >= LOAD_SECONDS then break end
+		local p = prog(t / LOAD_SECONDS)
+		fill.Size = UDim2.fromScale(p, 1)
+		pct.Text = math.floor(p * 100) .. "%"
+		local msg = STAGES[1][2]
+		for _, s in ipairs(STAGES) do if p >= s[1] then msg = s[2] end end
+		stageLbl.Text = msg .. string.rep(".", math.floor(t * 2) % 4)
+		tipLbl.Text = TIPS[math.floor(t / 6) % #TIPS + 1]
+		for i, sq in ipairs(steps) do sq.BackgroundColor3 = p >= (i - 1) * 0.2 and C.pink or C.dark end
+		task.wait(0.1)
+	end
+
+	pcall(function() StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, true) end)
+	fill.Size = UDim2.fromScale(1, 1); pct.Text = "100%"; stageLbl.Text = "Ready!"; fill.BackgroundColor3 = C.green
+	task.wait(0.6)
+	TweenService:Create(root, TweenInfo.new(0.5), {GroupTransparency = 1}):Play()
+	task.wait(0.55)
+	lg:Destroy()
+end
+-- ============ END ============
