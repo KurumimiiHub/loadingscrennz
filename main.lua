@@ -86,7 +86,7 @@ do
 	local lg = mk("ScreenGui", {Name = "LuckyBlockLuckerLoading", ResetOnSpawn = false, IgnoreGuiInset = true,
 		DisplayOrder = 999999, ZIndexBehavior = Enum.ZIndexBehavior.Sibling}, nil)
 	pcall(function() lg.ScreenInsets = Enum.ScreenInsets.None end)
-	local root = mk("CanvasGroup", {Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, BorderSizePixel = 0, GroupTransparency = 1}, lg)
+	local root = mk("Frame", {Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, BorderSizePixel = 0}, lg) -- plain Frame (no CanvasGroup = no dimming)
 	-- gradient lives on its own frame (a gradient on the CanvasGroup itself would darken everything inside it)
 	local bg = mk("Frame", {Size = UDim2.fromScale(1, 1), BackgroundColor3 = C.white, BorderSizePixel = 0}, root)
 	mk("UIGradient", {Color = ColorSequence.new(Color3.fromRGB(34,27,36), Color3.fromRGB(10,9,12)), Rotation = 90}, bg)
@@ -173,7 +173,17 @@ do
 
 	pcall(function() StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false) end)
 	parentGui(lg)
-	TweenService:Create(root, TweenInfo.new(0.5), {GroupTransparency = 0}):Play()
+
+	local function fadeAll(dur)
+		for _, d in ipairs(root:GetDescendants()) do
+			local goal
+			if d:IsA("TextButton") or d:IsA("TextLabel") then goal = {TextTransparency = 1, BackgroundTransparency = 1}
+			elseif d:IsA("ImageLabel") then goal = {ImageTransparency = 1, BackgroundTransparency = 1}
+			elseif d:IsA("Frame") then goal = {BackgroundTransparency = 1}
+			elseif d:IsA("UIStroke") then goal = {Transparency = 1} end
+			if goal then TweenService:Create(d, TweenInfo.new(dur), goal):Play() end
+		end
+	end
 
 	local t0 = os.clock()
 	while true do
@@ -193,7 +203,7 @@ do
 	pcall(function() StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, true) end)
 	fill.Size = UDim2.fromScale(1, 1); pct.Text = "100%"; stageLbl.Text = "Ready!"; fill.BackgroundColor3 = C.green
 	task.wait(0.6)
-	TweenService:Create(root, TweenInfo.new(0.5), {GroupTransparency = 1}):Play()
+	fadeAll(0.5)
 	task.wait(0.55)
 	lg:Destroy()
 end
